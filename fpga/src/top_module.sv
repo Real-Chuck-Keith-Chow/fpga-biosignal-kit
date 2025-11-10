@@ -1,7 +1,7 @@
 // ============================================================================
 // Project: Smart Edge Biosignal Data Platform
 // File   : top_module.sv
-// Author : Chad Chow (Real-Chuck-Keith-Chow)
+// Author : Cheuk Fung Keith Chow (Real-Chuck-Keith-Chow)
 // Desc   : Top level that orchestrates ADC sampling (via adc_interface),
 //          hardware filtering (filter), and framed UART streaming (uart_tx).
 //          Produces a robust 3-byte frame per sample: [0xA5][HI][LO].
