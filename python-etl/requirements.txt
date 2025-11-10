@@ -1,0 +1,13 @@
+# === FPGA Biosignal ETL Requirements ===
+# Core I/O & Communication
+pyserial==3.5
+paho-mqtt==1.6.1
+
+# Data Processing & Math
+numpy>=1.26.0
+
+# Optional: Visualization & REST Dashboard
+flask==3.0.3
+matplotlib>=3.8.0
+
+# SQLite3 is part of Python’s stdlib — no install required
