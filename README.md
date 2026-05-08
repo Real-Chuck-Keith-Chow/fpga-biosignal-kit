@@ -1,62 +1,99 @@
-🧠 Smart Edge Biosignal Data Platform
+# FPGA × IoT × Analytics  
+### Real-Time Signal Intelligence Pipeline from Hardware to Cloud
 
-FPGA × IoT × Analytics — a full-stack hardware-to-cloud data pipeline for real-time signal intelligence
+A full-stack edge analytics platform that combines FPGA-based signal processing, IoT messaging, and real-time visualization into a unified hardware-to-cloud pipeline.
 
-🚀 Overview
+Designed around Industry 4.0 principles, this project demonstrates how low-level digital hardware can integrate seamlessly with modern edge computing and analytics infrastructure.
 
-This project transforms an FPGA board into a self-contained edge data acquisition system that captures biosignals, cleans them in hardware, and streams the processed data through a Python ETL + Node-RED pipeline for real-time analytics and fault detection.
+---
 
-Built to demonstrate the principles of Industry 4.0, digital manufacturing, and smart sensor connectivity, this system bridges Verilog hardware design with IoT-level intelligence.
+## 🚀 Overview
 
-🏗️ Architecture
+This system transforms an FPGA development board into a self-contained edge acquisition platform capable of:
+
+- Capturing biosignal data
+- Performing real-time hardware filtering directly on the FPGA
+- Streaming processed telemetry through a Python ETL pipeline
+- Publishing live data via MQTT
+- Visualizing analytics and fault events through Node-RED dashboards
+
+The project bridges:
+
+- **Digital Hardware Design (Verilog/SystemVerilog)**
+- **Embedded Communication Protocols**
+- **Edge Computing & IoT Infrastructure**
+- **Real-Time Data Analytics**
+
+---
+
+## 🏗️ System Architecture
+
+```text
 [Biosignal Sensor]
-      │
-      ▼
-[FPGA: ADC Interface + Filter + UART TX]
-      │
-      ▼
+        │
+        ▼
+[FPGA]
+ ├── ADC Interface
+ ├── Moving-Average Filter
+ └── UART Transmitter
+        │
+        ▼
 [Python Edge Node]
- ├── SQLite Local DB
+ ├── SQLite Storage
  ├── MQTT Publisher
  └── REST API (Flask)
-      │
-      ▼
+        │
+        ▼
 [Node-RED Dashboard]
- ├── Real-Time Graphs
- ├── Fault Alerts
- └── Machine Data Export
+ ├── Real-Time Visualization
+ ├── Fault Detection Alerts
+ └── Data Export & Monitoring
+```
 
-⚙️ Features
+---
 
-✅ FPGA-Level Data Processing
+## ⚙️ Core Features
 
-Custom Verilog pipeline: ADC sampling → moving-average filter → UART framing
+### FPGA Signal Processing
 
-Realistic SPI ADC emulation + FIFO buffering for smooth flow
+- Custom Verilog pipeline for:
+  - ADC sampling
+  - Moving-average filtering
+  - UART packet framing
+- SPI ADC emulation with FIFO buffering
+- Simulation-ready SystemVerilog testbench compatible with Verilator
+- Modular architecture for multi-channel scalability
 
-Simulation-ready testbench (tb_top_module.sv) for Verilator
+### Edge Data Intelligence
 
-✅ Edge Data Intelligence
+- Python ETL pipeline for serial ingestion and preprocessing
+- Local persistence using SQLite
+- MQTT publishing for distributed analytics workflows
+- Real-time statistical anomaly detection using ±3σ thresholds
+- REST API for external integrations and monitoring systems
 
-Python ETL reads serial stream, logs to SQLite, publishes to MQTT
+### Industrial IoT Visualization
 
-Live ±3σ statistical fault detection (predictive-maintenance style)
+- Node-RED dashboard with:
+  - Live biosignal plotting
+  - Fault-state visualization
+  - Streaming telemetry updates
+- MQTT-based messaging architecture for cloud extensibility
+- Real-time monitoring with low-latency updates
 
-REST API for external dashboards or CMMS integration
+### Deployment Flexibility
 
-✅ Industrial Visualization
+- Supports both:
+  - Hardware deployment (Intel DE10-Lite / MAX10 FPGA)
+  - Full software simulation (Verilator)
+- Cross-platform development workflow
+- Easily extensible to additional sensors and acquisition channels
 
-Node-RED dashboard with real-time biosignal plots and red-alert indicator
+---
 
-MQTT broker for modular expansion to cloud analytics
+## 📁 Repository Structure
 
-✅ Cross-Platform Ready
-
-Works in simulation (Verilator) or on hardware (DE10-Lite / MAX10)
-
-Designed for scalability — add more channels or sensors easily
-
-🧩 Repo Structure
+```text
 fpga-biosignal-kit/
 │
 ├── fpga/
@@ -65,80 +102,165 @@ fpga-biosignal-kit/
 │   │   ├── adc_interface.sv
 │   │   ├── filter.sv
 │   │   └── uart_tx.sv
-│   ├── tb/tb_top_module.sv
-│   └── docs/timing_diagram.png
+│   │
+│   ├── tb/
+│   │   └── tb_top_module.sv
+│   │
+│   └── docs/
+│       └── timing_diagram.png
 │
 ├── python-etl/
 │   ├── etl.py
 │   ├── visualize.py
 │   └── requirements.txt
 │
-├── node-red/flows.json
-├── api/server.py
+├── node-red/
+│   └── flows.json
+│
+├── api/
+│   └── server.py
+│
 └── README.md
+```
 
-📈 Dashboard Preview
+---
 
-(Once you import flows.json into Node-RED and run the ETL script)
+## 📊 Dashboard Capabilities
 
-🧩 Live Biosignal Chart — 10 Hz refresh
+After importing `flows.json` into Node-RED and starting the ETL pipeline:
 
-⚡ Fault Detector — turns red when deviation > 3σ
+- **Live Biosignal Visualization**  
+  Real-time waveform plotting with ~10 Hz refresh rate
 
-📊 Local Data Log — stored in biosignal.db for later analysis
+- **Fault Detection Alerts**  
+  Automatic alert triggering when signal deviation exceeds statistical thresholds
 
-🧠 Example Workflow
-# 1️⃣ Run the FPGA simulation or program your board
-verilator --cc fpga/src/top_module.sv --exe fpga/tb/tb_top_module.sv
+- **Historical Data Logging**  
+  Sensor data persisted locally in `biosignal.db` for offline analysis
 
-# 2️⃣ Start the ETL pipeline
+---
+
+## 🧠 Example Workflow
+
+### 1. Run FPGA Simulation
+
+```bash
+verilator --cc fpga/src/top_module.sv \
+          --exe fpga/tb/tb_top_module.sv
+```
+
+Or deploy directly to supported FPGA hardware.
+
+---
+
+### 2. Start the Python ETL Pipeline
+
+```bash
 cd python-etl
 python3 etl.py
+```
 
-# 3️⃣ Launch the dashboard
+---
+
+### 3. Launch Node-RED Dashboard
+
+```bash
 node-red start
-# Import node-red/flows.json and open http://localhost:1880/ui
+```
 
-# 4️⃣ Start REST API (optional)
+Import:
+
+```text
+node-red/flows.json
+```
+
+Then open:
+
+```text
+http://localhost:1880/ui
+```
+
+---
+
+### 4. Start REST API (Optional)
+
+```bash
 cd api
 python3 server.py
+```
 
-📊 Results
-Metric	Result
-Sampling rate	1 kHz
-End-to-end latency	< 200 ms
-Mean detection accuracy	± 2σ
-Database throughput	100 samples / sec
-Dashboard update rate	10 Hz
-🧮 Skills Demonstrated
+---
 
-FPGA Design & Verification (Verilog, testbenching, timing)
+## 📈 Performance Metrics
 
-Embedded Systems (UART, SPI, filtering, FIFO)
+| Metric | Result |
+|---|---|
+| Sampling Rate | 1 kHz |
+| End-to-End Latency | < 200 ms |
+| Database Throughput | 100 samples/sec |
+| Dashboard Refresh Rate | 10 Hz |
+| Fault Detection Method | ±3σ Statistical Analysis |
 
-Industrial IoT & Edge Computing (MQTT, Node-RED, SQLite)
+---
 
-Data Analytics (Python, pandas, matplotlib)
+## 🛠️ Technologies Used
 
-System Integration (REST API, real-time dashboards)
+### Hardware & Embedded
+- Verilog / SystemVerilog
+- FPGA Design & Verification
+- UART Communication
+- SPI Interfaces
+- FIFO Buffering
 
-🔮 Future Enhancements
+### Software & Analytics
+- Python
+- SQLite
+- MQTT
+- Flask
+- pandas
+- matplotlib
 
-OPC UA connector for PLC integration (Allen-Bradley / Siemens)
+### IoT & Visualization
+- Node-RED
+- Real-Time Dashboards
+- REST APIs
+- Edge Analytics
 
-Multi-channel ADC acquisition with DMA
+---
 
-Integration with AWS IoT Core / Azure Digital Twins
+## 🎯 Engineering Concepts Demonstrated
 
-On-device ML model for anomaly detection (TensorFlow Lite)
+- FPGA-based digital signal processing
+- Hardware/software co-design
+- Embedded communication systems
+- Real-time telemetry pipelines
+- Industrial IoT architectures
+- Edge analytics and anomaly detection
+- End-to-end systems integration
 
-👨‍💻 Author
+---
 
-Cheuk Fung Keith Chow
-Computer Engineering @ York University
-🔗 GitHub
- · ✉️ rosarollins069@gmail.com
+## 🔮 Future Enhancements
 
-🏁 License
+- OPC UA integration for industrial PLC communication
+- Multi-channel DMA-based acquisition
+- AWS IoT Core / Azure Digital Twins connectivity
+- TensorFlow Lite anomaly detection at the edge
+- FPGA-based FFT and spectral analysis
+- Containerized deployment for edge gateways
 
-MIT License © 2025 Real-Chuck-Keith-Chow
+---
+
+## 👨‍💻 Author
+
+**Cheuk Fung Keith Chow**  
+Computer Engineering — York University
+
+- GitHub: https://github.com/Real-Chuck-Keith-Chow
+- Email: rosarollins069@gmail.com
+
+---
+
+## 📄 License
+
+MIT License © 2025 Cheuk Fung Keith Chow
