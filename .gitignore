@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Database / generated data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# FPGA / simulation outputs
+*.vcd
+*.fst
+obj_dir/
+*.out
+*.log
+
+# Node / Node-RED
+node_modules/
+.node-red/
+
+# OS / editor files
+.DS_Store
+.vscode/
+.idea/
