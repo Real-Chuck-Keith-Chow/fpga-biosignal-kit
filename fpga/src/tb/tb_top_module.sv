@@ -2,8 +2,8 @@
 
 module tb_top_module;
 
-    logic clk = 0;
-    logic rst_n = 0;
+    logic clk = 1'b0;
+    logic rst_n = 1'b0;
 
     logic adc_miso_i;
     logic adc_sclk_o;
@@ -26,23 +26,24 @@ module tb_top_module;
         .dbg_sample_tick_o(dbg_sample_tick_o)
     );
 
-    always #10 clk = ~clk;
+    always #10 clk = ~clk; // 50 MHz
+
+    always_ff @(posedge adc_sclk_o or posedge adc_cs_n_o) begin
+        if (adc_cs_n_o)
+            adc_miso_i <= 1'b0;
+        else
+            adc_miso_i <= $urandom_range(0, 1);
+    end
 
     initial begin
         $dumpfile("tb_top_module.vcd");
         $dumpvars(0, tb_top_module);
 
-        rst_n = 0;
-        adc_miso_i = 0;
-        #200;
-        rst_n = 1;
+        repeat (10) @(posedge clk);
+        rst_n = 1'b1;
 
-        repeat (5000) begin
-            adc_miso_i = $random;
-            #20;
-        end
+        repeat (200_000) @(posedge clk);
 
-        #2000;
         $display("Simulation complete");
         $finish;
     end
